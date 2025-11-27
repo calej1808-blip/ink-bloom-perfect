@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
-export const Header = () => {
+interface HeaderProps {
+  onAddPoem: () => void;
+}
+
+export const Header = ({ onAddPoem }: HeaderProps) => {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -22,13 +26,14 @@ export const Header = () => {
           </motion.div>
           
           <div className="flex items-center gap-6">
-            <motion.a
+            <motion.button
               whileHover={{ scale: 1.05 }}
-              href="/admin"
-              className="text-sm font-sans text-muted-foreground hover:text-foreground transition-colors"
+              onClick={onAddPoem}
+              className="flex items-center gap-2 text-sm font-sans text-muted-foreground hover:text-foreground transition-colors"
             >
-              Admin
-            </motion.a>
+              <Plus className="w-4 h-4" />
+              Agregar Poema
+            </motion.button>
           </div>
         </div>
       </nav>
