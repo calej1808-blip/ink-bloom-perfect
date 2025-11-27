@@ -135,7 +135,7 @@ const App = () => {
                 className="text-muted-foreground font-serif italic text-lg"
               >
                 Aún no hay poemas en la colección...
-              </div>
+              </motion.div>
             </div>
           ) : (
             <div className="space-y-10">
