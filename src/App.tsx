@@ -1,29 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from "@/components/Header";
 import { PoemCard } from "@/components/PoemCard";
+import { AddPoemForm } from "@/components/AddPoemForm";
 import { getPoems } from "@/lib/getPoems";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
-// ✅ Datos iniciales de poemas
-const initialPoems = getPoems();
+interface Poem {
+  id: string;
+  title: string;
+  content: string;
+  date: string;
+}
 
 const App = () => {
-  const [poems, setPoems] = useState(initialPoems);
+  const [poems, setPoems] = useState<Poem[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // ✅ Función para manejar agregar poema
+  // Cargar poemas al iniciar
+  useEffect(() => {
+    const savedPoems = localStorage.getItem('ink-bloom-poems');
+    if (savedPoems) {
+      setPoems(JSON.parse(savedPoems));
+    } else {
+      // Usar datos iniciales si no hay guardados
+      setPoems(getPoems());
+    }
+  }, []);
+
+  // Guardar poemas cuando cambien
+  useEffect(() => {
+    if (poems.length > 0) {
+      localStorage.setItem('ink-bloom-poems', JSON.stringify(poems));
+    }
+  }, [poems]);
+
   const handleAddPoem = () => {
-    alert('Función "Agregar Poema" activada.\n\nEn la siguiente versión podrás:\n• Crear nuevos poemas\n• Editar títulos existentes\n• Guardar cambios permanentemente');
-    
-    // 📝 PARA LA PRÓXIMA ITERACIÓN:
-    // Aquí se integrará un formulario modal
-    // que permita crear/editar poemas
+    setIsFormOpen(true);
+  };
+
+  const handlePoemAdded = (newPoem: Poem) => {
+    setPoems(prev => [newPoem, ...prev]);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ✅ PASANDO la prop correctamente */}
       <Header onAddPoem={handleAddPoem} />
+      
+      <AddPoemForm 
+        isOpen={isFormOpen}
+        onClose={handleCloseForm}
+        onPoemAdded={handlePoemAdded}
+      />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
@@ -61,7 +93,9 @@ const App = () => {
               className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-primary/10 border border-primary/20"
             >
               <Sparkles className="w-4 h-4 text-primary animate-glow-pulse" />
-              <span className="text-sm font-sans text-primary font-medium">Personal Poetry Collection</span>
+              <span className="text-sm font-sans text-primary font-medium">
+                {poems.length} {poems.length === 1 ? 'Poema' : 'Poemas'} en la Colección
+              </span>
             </motion.div>
             
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-6 leading-tight">
@@ -93,11 +127,23 @@ const App = () => {
           </motion.div>
 
           {/* Poems Grid */}
-          <div className="space-y-10">
-            {poems.map((poem, index) => (
-              <PoemCard key={poem.id} poem={poem} index={index} />
-            ))}
-          </div>
+          {poems.length === 0 ? (
+            <div className="text-center py-20">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-muted-foreground font-serif italic text-lg"
+              >
+                Aún no hay poemas en la colección...
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-10">
+              {poems.map((poem, index) => (
+                <PoemCard key={poem.id} poem={poem} index={index} />
+              ))}
+            </div>
+          )}
         </main>
       </section>
     </div>
