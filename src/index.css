@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, oklch(0.65 0.25 250) 0%, oklch(0.70 0.20 320) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-text {
+  text-shadow: 0 0 40px oklch(0.65 0.25 250 / 0.3);
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+  from {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 4px oklch(0.65 0.25 250 / 0.4));
+  }
+  to {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px oklch(0.65 0.25 250 / 0.6));
+  }
+}
