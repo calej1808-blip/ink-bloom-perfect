@@ -1,15 +1,29 @@
+import { useState } from 'react';
 import { Header } from "@/components/Header";
 import { PoemCard } from "@/components/PoemCard";
 import { getPoems } from "@/lib/getPoems";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
+// ✅ Datos iniciales de poemas
+const initialPoems = getPoems();
+
 const App = () => {
-  const poems = getPoems();
+  const [poems, setPoems] = useState(initialPoems);
+
+  // ✅ Función para manejar agregar poema
+  const handleAddPoem = () => {
+    alert('Función "Agregar Poema" activada.\n\nEn la siguiente versión podrás:\n• Crear nuevos poemas\n• Editar títulos existentes\n• Guardar cambios permanentemente');
+    
+    // 📝 PARA LA PRÓXIMA ITERACIÓN:
+    // Aquí se integrará un formulario modal
+    // que permita crear/editar poemas
+  };
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      {/* ✅ PASANDO la prop correctamente */}
+      <Header onAddPoem={handleAddPoem} />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
