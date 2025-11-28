@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from "@/components/Header";
-import { PoemCard } from "@/components/PoemCard";
+import { PoemList } from "@/components/PoemList";
+import { PoemDetail } from "@/components/PoemDetail";
 import { AddPoemForm } from "@/components/AddPoemForm";
 import { SearchAndFilter } from "@/components/SearchAndFilter";
 import { getPoems } from "@/lib/getPoems";
@@ -19,6 +20,7 @@ const App = () => {
   const [poems, setPoems] = useState<Poem[]>([]);
   const [filteredPoems, setFilteredPoems] = useState<Poem[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
 
@@ -86,6 +88,14 @@ const App = () => {
     setFilterCategory(category);
   };
 
+  const handlePoemClick = (poem: Poem) => {
+    setSelectedPoem(poem);
+  };
+
+  const handleClosePoemDetail = () => {
+    setSelectedPoem(null);
+  };
+
   return (
     <div className="min-h-screen bg-vintage-brown bg-paper-texture">
       {/* Efectos de partículas vintage sutiles */}
@@ -126,6 +136,13 @@ const App = () => {
         onClose={handleCloseForm}
         onPoemAdded={handlePoemAdded}
         existingCategories={allCategories}
+      />
+
+      {/* Modal de detalle del poema */}
+      <PoemDetail 
+        poem={selectedPoem}
+        isOpen={!!selectedPoem}
+        onClose={handleClosePoemDetail}
       />
       
       {/* Hero Section */}
@@ -206,7 +223,7 @@ const App = () => {
             />
           )}
 
-          {/* Grid de Poemas */}
+          {/* Lista de Poemas (Solo títulos) */}
           {filteredPoems.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -233,14 +250,14 @@ const App = () => {
             </motion.div>
           ) : (
             <motion.div 
-              className="space-y-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              {filteredPoems.map((poem, index) => (
-                <PoemCard key={poem.id} poem={poem} index={index} />
-              ))}
+              <PoemList 
+                poems={filteredPoems}
+                onPoemClick={handlePoemClick}
+              />
             </motion.div>
           )}
         </main>
