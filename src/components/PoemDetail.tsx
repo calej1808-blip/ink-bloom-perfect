@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { X, Calendar, Tag, ArrowLeft } from "lucide-react";
+import { X, Calendar, Tag, ArrowLeft, Trash2, Edit3 } from "lucide-react";
 
 interface Poem {
   id: string;
@@ -13,13 +13,29 @@ interface PoemDetailProps {
   poem: Poem | null;
   isOpen: boolean;
   onClose: () => void;
+  onPoemDelete?: (poemId: string) => void;
+  onPoemEdit?: (poem: Poem) => void;
 }
 
-export const PoemDetail = ({ poem, isOpen, onClose }: PoemDetailProps) => {
+export const PoemDetail = ({ poem, isOpen, onClose, onPoemDelete, onPoemEdit }: PoemDetailProps) => {
   if (!isOpen || !poem) return null;
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (onPoemDelete && window.confirm('¿Estás seguro de que quieres eliminar este poema? Esta acción no se puede deshacer.')) {
+      onPoemDelete(poem.id);
+      onClose();
+    }
+  };
+
+  const handleEditClick = () => {
+    if (onPoemEdit) {
+      onPoemEdit(poem);
       onClose();
     }
   };
@@ -39,7 +55,7 @@ export const PoemDetail = ({ poem, isOpen, onClose }: PoemDetailProps) => {
         transition={{ type: "spring", damping: 25 }}
         className="bg-vintage-brown-light rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-metallic-gold/30 vintage-border"
       >
-        {/* Header del detalle */}
+        {/* Header del detalle con acciones */}
         <div className="flex items-center justify-between p-6 border-b border-metallic-gold/20 bg-vintage-brown-light/80">
           <button
             onClick={onClose}
@@ -49,12 +65,42 @@ export const PoemDetail = ({ poem, isOpen, onClose }: PoemDetailProps) => {
             <span className="font-medium">Volver a la lista</span>
           </button>
           
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-metallic-gold/10 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5 text-warm-beige" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Botón Editar (opcional) */}
+            {onPoemEdit && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleEditClick}
+                className="flex items-center gap-2 px-4 py-2 bg-metallic-gold/20 text-metallic-gold rounded-lg hover:bg-metallic-gold/30 transition-colors border border-metallic-gold/30"
+                title="Editar poema"
+              >
+                <Edit3 className="w-4 h-4" />
+                <span className="text-sm font-medium">Editar</span>
+              </motion.button>
+            )}
+            
+            {/* Botón Eliminar */}
+            {onPoemDelete && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDeleteClick}
+                className="flex items-center gap-2 px-4 py-2 bg-red-400/20 text-red-400 rounded-lg hover:bg-red-400/30 transition-colors border border-red-400/30"
+                title="Eliminar poema"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span className="text-sm font-medium">Eliminar</span>
+              </motion.button>
+            )}
+            
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-metallic-gold/10 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5 text-warm-beige" />
+            </button>
+          </div>
         </div>
 
         {/* Contenido del poema */}
