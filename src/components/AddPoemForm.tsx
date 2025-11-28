@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, X, Calendar, Tag } from 'lucide-react';
+import { Plus, X, Calendar, Tag, Save } from 'lucide-react';
 
 interface Poem {
   id: string;
@@ -14,15 +14,44 @@ interface AddPoemFormProps {
   isOpen: boolean;
   onClose: () => void;
   onPoemAdded: (newPoem: Poem) => void;
+  onPoemUpdated?: (updatedPoem: Poem) => void;
   existingCategories?: string[];
+  poemToEdit?: Poem | null;
+  isEditMode?: boolean;
 }
 
-export const AddPoemForm = ({ isOpen, onClose, onPoemAdded, existingCategories = [] }: AddPoemFormProps) => {
+export const AddPoemForm = ({ 
+  isOpen, 
+  onClose, 
+  onPoemAdded, 
+  onPoemUpdated,
+  existingCategories = [], 
+  poemToEdit = null,
+  isEditMode = false 
+}: AddPoemFormProps) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Resetear formulario cuando se abre/cierra o cambia el poema a editar
+  useEffect(() => {
+    if (isOpen) {
+      if (isEditMode && poemToEdit) {
+        // Modo edición: cargar datos del poema
+        setTitle(poemToEdit.title);
+        setContent(poemToEdit.content);
+        setCategories(poemToEdit.categories || []);
+      } else {
+        // Modo creación: resetear formulario
+        setTitle('');
+        setContent('');
+        setCategories([]);
+        setNewCategory('');
+      }
+    }
+  }, [isOpen, isEditMode, poemToEdit]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,15 +65,19 @@ export const AddPoemForm = ({ isOpen, onClose, onPoemAdded, existingCategories =
 
     // Simular proceso de guardado
     setTimeout(() => {
-      const newPoem: Poem = {
-        id: Date.now().toString(),
+      const poemData: Poem = {
+        id: isEditMode && poemToEdit ? poemToEdit.id : Date.now().toString(),
         title: title.trim(),
         content: content.trim(),
-        date: new Date().toISOString().split('T')[0],
+        date: isEditMode && poemToEdit ? poemToEdit.date : new Date().toISOString().split('T')[0],
         categories: categories.length > 0 ? categories : undefined
       };
 
-      onPoemAdded(newPoem);
+      if (isEditMode && onPoemUpdated) {
+        onPoemUpdated(poemData);
+      } else {
+        onPoemAdded(poemData);
+      }
       
       // Resetear formulario
       setTitle('');
@@ -90,7 +123,7 @@ export const AddPoemForm = ({ isOpen, onClose, onPoemAdded, existingCategories =
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={handleOverlayClick}
     >
       <motion.div
@@ -98,20 +131,24 @@ export const AddPoemForm = ({ isOpen, onClose, onPoemAdded, existingCategories =
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: "spring", damping: 25 }}
-        className="bg-vintage-brown-light rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-metallic-gold/30 vintage-border"
+        className="bg-vintage-brown-light rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-metallic-gold/30 vintage-border"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-metallic-gold/20">
+        {/* Header del formulario */}
+        <div className="flex items-center justify-between p-6 border-b border-metallic-gold/20 bg-vintage-brown-light/80">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-metallic-gold/20 rounded-lg">
-              <Plus className="w-5 h-5 text-metallic-gold" />
+            <div className={`p-2 ${isEditMode ? 'bg-bronze-gold/20' : 'bg-metallic-gold/20'} rounded-lg`}>
+              {isEditMode ? (
+                <Save className="w-5 h-5 text-bronze-gold" />
+              ) : (
+                <Plus className="w-5 h-5 text-metallic-gold" />
+              )}
             </div>
             <div>
               <h2 className="text-xl font-serif font-bold text-metallic-gold vintage-bevel">
-                Nuevo Poema
+                {isEditMode ? 'Editar Poema' : 'Nuevo Poema'}
               </h2>
               <p className="text-sm text-warm-beige">
-                Comparte tus palabras con el mundo
+                {isEditMode ? 'Modifica tu poema existente' : 'Comparte tus palabras con el mundo'}
               </p>
             </div>
           </div>
@@ -243,10 +280,24 @@ Puedes usar espacios para separar estrofas."
           </div>
 
           {/* Date Info */}
-          <div className="flex items-center gap-2 text-sm text-warm-beige/80 p-3 bg-metallic-gold/10 rounded-lg border border-metallic-gold/20">
-            <Calendar className="w-4 h-4" />
-            <span>Se agregará automáticamente la fecha de hoy</span>
-          </div>
+          {!isEditMode && (
+            <div className="flex items-center gap-2 text-sm text-warm-beige/80 p-3 bg-metallic-gold/10 rounded-lg border border-metallic-gold/20">
+              <Calendar className="w-4 h-4" />
+              <span>Se agregará automáticamente la fecha de hoy</span>
+            </div>
+          )}
+
+          {/* Edit Info */}
+          {isEditMode && poemToEdit && (
+            <div className="flex items-center gap-2 text-sm text-warm-beige/80 p-3 bg-bronze-gold/10 rounded-lg border border-bronze-gold/20">
+              <Calendar className="w-4 h-4" />
+              <span>Poema creado el {new Date(poemToEdit.date).toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}</span>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex gap-3 justify-end pt-4 border-t border-metallic-gold/20">
@@ -260,17 +311,21 @@ Puedes usar espacios para separar estrofas."
             <button
               type="submit"
               disabled={isSubmitting || !title.trim() || !content.trim()}
-              className="px-6 py-3 bg-metallic-gold text-vintage-brown rounded-xl hover:bg-metallic-gold/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center gap-2 shadow-lg shadow-metallic-gold/30"
+              className={`px-6 py-3 rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center gap-2 shadow-lg ${
+                isEditMode 
+                  ? 'bg-bronze-gold text-vintage-brown shadow-bronze-gold/30' 
+                  : 'bg-metallic-gold text-vintage-brown shadow-metallic-gold/30'
+              }`}
             >
               {isSubmitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-vintage-brown border-t-transparent rounded-full animate-spin" />
-                  Guardando...
+                  {isEditMode ? 'Guardando...' : 'Creando...'}
                 </>
               ) : (
                 <>
-                  <Plus className="w-4 h-4" />
-                  Crear Poema
+                  {isEditMode ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  {isEditMode ? 'Guardar Cambios' : 'Crear Poema'}
                 </>
               )}
             </button>
