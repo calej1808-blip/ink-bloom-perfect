@@ -87,8 +87,8 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-parchment to-cream">
-      {/* Efectos de fondo dorados */}
+    <div className="min-h-screen bg-vintage-brown bg-paper-texture">
+      {/* Efectos de partículas vintage sutiles */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ 
@@ -96,8 +96,8 @@ const App = () => {
             y: [0, -50, 0],
             rotate: [0, 180, 360]
           }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/4 left-1/4 w-4 h-4 bg-gold/30 rounded-full animate-float"
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute top-1/4 left-1/4 w-3 h-3 bg-metallic-gold/20 rounded-full animate-float-vintage"
         />
         <motion.div
           animate={{ 
@@ -105,8 +105,8 @@ const App = () => {
             y: [0, 60, 0],
             rotate: [0, -180, -360]
           }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-3/4 right-1/3 w-3 h-3 bg-copper/40 rounded-full animate-float"
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          className="absolute top-3/4 right-1/3 w-2 h-2 bg-bronze-gold/30 rounded-full animate-float-vintage"
         />
         <motion.div
           animate={{ 
@@ -114,8 +114,8 @@ const App = () => {
             y: [0, 30, 0],
             rotate: [0, 270, 540]
           }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-1/4 left-1/2 w-2 h-2 bg-bronze/50 rounded-full animate-float"
+          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-1/4 left-1/2 w-1 h-1 bg-metallic-gold/40 rounded-full animate-float-vintage"
         />
       </div>
 
@@ -130,23 +130,23 @@ const App = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Efectos de fondo ambientales */}
+        {/* Efectos de fondo vintage */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
             animate={{ 
               scale: [1, 1.3, 1],
-              opacity: [0.2, 0.4, 0.2]
+              opacity: [0.05, 0.1, 0.05]
             }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-40 -right-40 w-96 h-96 bg-gold/15 rounded-full blur-3xl metal-glow"
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-40 -right-40 w-96 h-96 bg-metallic-gold/10 rounded-full blur-3xl vintage-glow"
           />
           <motion.div
             animate={{ 
               scale: [1.2, 1, 1.2],
-              opacity: [0.15, 0.3, 0.15]
+              opacity: [0.03, 0.08, 0.03]
             }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-40 -left-40 w-96 h-96 bg-copper/20 rounded-full blur-3xl metal-glow"
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -bottom-40 -left-40 w-96 h-96 bg-bronze-gold/15 rounded-full blur-3xl vintage-glow"
           />
         </div>
 
@@ -161,39 +161,39 @@ const App = () => {
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-gold/10 border border-gold/20 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-metallic-gold/10 border border-metallic-gold/20 vintage-border"
             >
-              <Sparkles className="w-4 h-4 text-gold animate-glow-pulse" />
-              <span className="text-sm font-sans text-bronze font-medium">
+              <Sparkles className="w-4 h-4 text-metallic-gold animate-glow-pulse" />
+              <span className="text-sm font-sans text-warm-beige font-medium">
                 {filteredPoems.length} {filteredPoems.length === 1 ? 'Poema' : 'Poemas'} en la Colección
               </span>
             </motion.div>
             
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-6 leading-tight">
-              <span className="text-gradient glow-text">
+              <span className="text-vintage-gold vintage-bevel">
                 A Collection
               </span>
               <br />
-              <span className="text-bronze">of Words</span>
+              <span className="text-vintage-gold vintage-bevel">of Words</span>
             </h1>
             
             <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.4 }}
-              className="text-xl md:text-2xl text-copper font-serif italic leading-relaxed max-w-2xl mx-auto"
+              className="text-xl md:text-2xl text-warm-beige font-serif italic leading-relaxed max-w-2xl mx-auto"
             >
               Fragments of thought, captured in verse—
               <br />
               moments crystallized into meaning
             </motion.p>
             
-            {/* Línea decorativa dorada */}
+            {/* Línea decorativa dorada vintage */}
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "200px" }}
               transition={{ duration: 1, delay: 0.6 }}
-              className="h-px bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-12"
+              className="h-px bg-gradient-to-r from-transparent via-metallic-gold to-transparent mx-auto mt-12"
             />
           </motion.div>
 
@@ -213,7 +213,7 @@ const App = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-20"
             >
-              <div className="text-copper font-serif italic text-lg mb-4">
+              <div className="text-warm-beige font-serif italic text-lg mb-4">
                 {poems.length === 0 
                   ? "Aún no hay poemas en la colección..." 
                   : "No se encontraron poemas con los filtros actuales."
@@ -225,7 +225,7 @@ const App = () => {
                     setSearchQuery('');
                     setFilterCategory('');
                   }}
-                  className="px-6 py-2 bg-gold/10 text-bronze rounded-xl hover:bg-gold/20 transition-colors border border-gold/30"
+                  className="px-6 py-2 bg-metallic-gold/10 text-warm-beige rounded-xl hover:bg-metallic-gold/20 transition-colors vintage-border"
                 >
                   Limpiar filtros
                 </button>
