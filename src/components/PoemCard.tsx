@@ -23,77 +23,93 @@ export const PoemCard = ({ poem, index }: PoemCardProps) => {
       whileHover={{ scale: 1.02 }}
       className="group relative"
     >
-      {/* Background effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-gold/5 to-copper/5 rounded-2xl transform group-hover:scale-105 transition-transform duration-300" />
+      {/* Efecto de fondo sutil al hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-metallic-gold/3 to-bronze-gold/5 rounded-2xl transform group-hover:scale-105 transition-all duration-300" />
       
-      <div className="relative bg-parchment/80 backdrop-blur-sm rounded-2xl border border-bronze/30 p-8 md:p-12 shadow-lg shadow-gold/10">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-6">
+      {/* Tarjeta principal con colores vintage */}
+      <div className="relative bg-vintage-brown-light/80 backdrop-blur-sm rounded-2xl border border-metallic-gold/25 p-8 md:p-10 shadow-xl shadow-black/30">
+        
+        {/* Encabezado con título y fecha */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <motion.h2 
-            className="text-2xl md:text-3xl font-serif font-bold text-bronze leading-tight"
-            whileHover={{ x: 5 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            className="text-2xl md:text-3xl font-serif font-bold text-metallic-gold leading-tight vintage-bevel flex-1"
+            whileHover={{ x: 3 }}
+            transition={{ type: "spring", stiffness: 400 }}
           >
             {poem.title}
           </motion.h2>
           
           {poem.date && (
             <motion.div 
-              className="flex items-center gap-2 text-sm text-copper"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              className="flex items-center gap-2 text-sm text-warm-beige/90 shrink-0"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 + 0.3 }}
             >
               <Calendar className="w-4 h-4" />
-              <span>{new Date(poem.date).toLocaleDateString()}</span>
+              <span className="font-medium">{new Date(poem.date).toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}</span>
             </motion.div>
           )}
         </div>
 
-        {/* Categories */}
+        {/* Categorías - Solo mostrar si existen */}
         {poem.categories && poem.categories.length > 0 && (
           <motion.div 
-            className="flex flex-wrap gap-2 mb-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="flex flex-wrap items-center gap-3 mb-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 + 0.2 }}
           >
-            <Tag className="w-4 h-4 text-copper mt-1" />
-            {poem.categories.map((category) => (
-              <span
-                key={category}
-                className="px-3 py-1 bg-gold/20 text-bronze rounded-full text-xs border border-gold/30"
-              >
-                {category}
-              </span>
-            ))}
+            <Tag className="w-4 h-4 text-metallic-gold/70" />
+            <div className="flex flex-wrap gap-2">
+              {poem.categories.map((category, catIndex) => (
+                <span
+                  key={category}
+                  className="px-3 py-1.5 bg-metallic-gold/15 text-warm-beige rounded-full text-sm border border-metallic-gold/25 font-medium hover:bg-metallic-gold/25 transition-colors duration-200"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
           </motion.div>
         )}
 
-        {/* Content */}
+        {/* Contenido del poema */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: index * 0.1 + 0.2 }}
-          className="prose prose-lg max-w-none"
+          transition={{ delay: index * 0.1 + 0.15 }}
+          className="relative"
         >
-          <pre className="font-serif text-copper leading-relaxed whitespace-pre-wrap text-lg">
+          <pre className="font-serif text-warm-beige/95 leading-relaxed whitespace-pre-wrap text-lg tracking-wide">
             {poem.content}
           </pre>
         </motion.div>
 
-        {/* Decorative elements */}
+        {/* Elementos decorativos vintage */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: index * 0.1 + 0.4 }}
-          className="absolute -bottom-2 -right-2 w-6 h-6 bg-gold/30 rounded-full"
+          initial={{ scale: 0, rotate: -45 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ delay: index * 0.1 + 0.4, type: "spring" }}
+          className="absolute -bottom-3 -right-3 w-8 h-8 bg-metallic-gold/20 rounded-full border border-metallic-gold/30"
         />
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: index * 0.1 + 0.5 }}
-          className="absolute -top-2 -left-2 w-4 h-4 bg-copper/40 rounded-full"
+          initial={{ scale: 0, rotate: 45 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ delay: index * 0.1 + 0.5, type: "spring" }}
+          className="absolute -top-3 -left-3 w-6 h-6 bg-bronze-gold/25 rounded-full border border-bronze-gold/35"
+        />
+
+        {/* Línea decorativa inferior */}
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: "100%" }}
+          transition={{ delay: index * 0.1 + 0.6, duration: 0.8 }}
+          className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-metallic-gold/40 to-transparent"
         />
       </div>
     </motion.article>
