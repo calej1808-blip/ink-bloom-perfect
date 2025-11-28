@@ -96,6 +96,24 @@ const App = () => {
     setSelectedPoem(null);
   };
 
+  // Función para eliminar poema
+  const handleDeletePoem = (poemId: string) => {
+    setPoems(prev => prev.filter(poem => poem.id !== poemId));
+    
+    // Si el poema eliminado estaba seleccionado, cerrar el detalle
+    if (selectedPoem && selectedPoem.id === poemId) {
+      setSelectedPoem(null);
+    }
+  };
+
+  // Función para editar poema (opcional - para futuro)
+  const handleEditPoem = (poem: Poem) => {
+    // Aquí podríamos abrir un formulario de edición
+    console.log('Editar poema:', poem);
+    // setIsEditFormOpen(true);
+    // setPoemToEdit(poem);
+  };
+
   return (
     <div className="min-h-screen bg-vintage-brown bg-paper-texture">
       {/* Efectos de partículas vintage sutiles */}
@@ -138,11 +156,13 @@ const App = () => {
         existingCategories={allCategories}
       />
 
-      {/* Modal de detalle del poema */}
+      {/* Modal de detalle del poema CON ACCIONES */}
       <PoemDetail 
         poem={selectedPoem}
         isOpen={!!selectedPoem}
         onClose={handleClosePoemDetail}
+        onPoemDelete={handleDeletePoem}
+        onPoemEdit={handleEditPoem}
       />
       
       {/* Hero Section */}
@@ -223,7 +243,7 @@ const App = () => {
             />
           )}
 
-          {/* Lista de Poemas (Solo títulos) */}
+          {/* Lista de Poemas CON BOTONES ELIMINAR */}
           {filteredPoems.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -257,6 +277,8 @@ const App = () => {
               <PoemList 
                 poems={filteredPoems}
                 onPoemClick={handlePoemClick}
+                onPoemDelete={handleDeletePoem}
+                onPoemEdit={handleEditPoem}
               />
             </motion.div>
           )}
