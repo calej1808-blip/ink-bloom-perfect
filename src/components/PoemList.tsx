@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, Tag, ChevronRight } from "lucide-react";
+import { Calendar, Tag, ChevronRight, Trash2, Edit3 } from "lucide-react";
 
 interface Poem {
   id: string;
@@ -12,9 +12,25 @@ interface Poem {
 interface PoemListProps {
   poems: Poem[];
   onPoemClick: (poem: Poem) => void;
+  onPoemDelete: (poemId: string) => void;
+  onPoemEdit?: (poem: Poem) => void;
 }
 
-export const PoemList = ({ poems, onPoemClick }: PoemListProps) => {
+export const PoemList = ({ poems, onPoemClick, onPoemDelete, onPoemEdit }: PoemListProps) => {
+  const handleDeleteClick = (e: React.MouseEvent, poemId: string) => {
+    e.stopPropagation(); // Evitar que se active el click del poema
+    if (window.confirm('¿Estás seguro de que quieres eliminar este poema? Esta acción no se puede deshacer.')) {
+      onPoemDelete(poemId);
+    }
+  };
+
+  const handleEditClick = (e: React.MouseEvent, poem: Poem) => {
+    e.stopPropagation();
+    if (onPoemEdit) {
+      onPoemEdit(poem);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {poems.map((poem, index) => (
@@ -27,7 +43,7 @@ export const PoemList = ({ poems, onPoemClick }: PoemListProps) => {
           className="group cursor-pointer"
           onClick={() => onPoemClick(poem)}
         >
-          {/* Tarjeta de título solamente */}
+          {/* Tarjeta de título con acciones */}
           <div className="relative bg-vintage-brown-light/70 backdrop-blur-sm rounded-xl border border-metallic-gold/20 p-6 hover:bg-vintage-brown-light/90 hover:border-metallic-gold/30 transition-all duration-300 shadow-lg hover:shadow-xl shadow-black/20 hover:shadow-metallic-gold/10">
             
             <div className="flex items-center justify-between">
@@ -69,15 +85,43 @@ export const PoemList = ({ poems, onPoemClick }: PoemListProps) => {
                 </div>
               </div>
               
-              {/* Indicador de click */}
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                whileHover={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-1 text-metallic-gold/60 group-hover:text-metallic-gold transition-colors"
-              >
-                <span className="text-sm font-medium hidden sm:block">Ver poema</span>
-                <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-              </motion.div>
+              {/* Acciones */}
+              <div className="flex items-center gap-2">
+                {/* Botón Editar (opcional) */}
+                {onPoemEdit && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileHover={{ opacity: 1, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => handleEditClick(e, poem)}
+                    className="p-2 text-metallic-gold/60 hover:text-metallic-gold hover:bg-metallic-gold/10 rounded-lg transition-all duration-200"
+                    title="Editar poema"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </motion.button>
+                )}
+                
+                {/* Botón Eliminar */}
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileHover={{ opacity: 1, scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => handleDeleteClick(e, poem.id)}
+                  className="p-2 text-red-400/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all duration-200"
+                  title="Eliminar poema"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </motion.button>
+                
+                {/* Indicador de click */}
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  whileHover={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-1 text-metallic-gold/60 group-hover:text-metallic-gold transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                </motion.div>
+              </div>
             </div>
 
             {/* Línea decorativa inferior */}
